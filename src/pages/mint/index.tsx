@@ -9,7 +9,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { useMetaMask } from "metamask-react";
 import { useNavigate } from "react-router-dom";
 
-import { sellTagNft, mintTagNft } from "src/utils/web3";
+import { mintTagNft } from "src/utils/web3";
 
 const ContainerBox = {
   display: "flex",
