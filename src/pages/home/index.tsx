@@ -126,7 +126,11 @@ export function Home() {
 
   const onSell = () => {
     if (!sellCount) alert("Please select how many tags you would like to sell");
-    sellTagNft(sellCount);
+    sellTagNft(sellCount).then((rlt) => {
+      if (!rlt) return;
+      setOwnedCount(ownedCount - sellCount);
+      alert("successfully sold");
+    });
   };
 
   const onAll = () => {
@@ -154,7 +158,11 @@ export function Home() {
 
   const onBuy = () => {
     if (!buyCount) alert("Please select how many tags you would like to buy");
-    buyTagNft(buyCount);
+    buyTagNft(buyCount).then((rlt) => {
+      if (!rlt) return;
+      setOwnedCount(ownedCount + buyCount);
+      alert("successfully baught");
+    });
   };
   ////
 

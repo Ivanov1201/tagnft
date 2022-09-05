@@ -39,43 +39,49 @@ const getTagCount = async () => {
     return;
   }
   const count = await contractWithSigner?.balanceOf(address, TAG);
-  return count;
+  return count.toNumber();
 };
 
 const sellTagNft = async (count: number) => {
-  contractWithSigner?.sellTag(count).then(
-    () => {
-      alert("successfully sold");
+  let rlt = false;
+  await contractWithSigner?.sellTag(count).then(
+    async (trxHash: any) => {
+      await trxHash.wait(1);
+      rlt = true;
     },
     (error: unknown) => {
       console.log(error);
     }
   );
+  return rlt;
 };
 
 const buyTagNft = async (count: number) => {
-  contractWithSigner?.buyTag(count).then(
-    async (tag: any) => {
-      // alert("successfully baught");
-      const txReceipt = await tag.wait(1);
-
-      console.log(txReceipt);
+  let rlt = false;
+  await contractWithSigner?.buyTag(count).then(
+    async (trxHash: any) => {
+      await trxHash.wait(1);
+      rlt = true;
     },
     (error: unknown) => {
       console.log(error);
     }
   );
+  return rlt;
 };
 
 const mintTagNft = async (count: number) => {
-  contractWithSigner?.buyTag(count).then(
-    () => {
-      alert("successfully minted");
+  let rlt = false;
+  await contractWithSigner?.buyTag(count).then(
+    async (trxHash: any) => {
+      await trxHash.wait(1);
+      rlt = true;
     },
     (error: unknown) => {
       console.log(error);
     }
   );
+  return rlt;
 };
 
 export {
