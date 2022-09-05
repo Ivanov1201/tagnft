@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { useMetaMask } from "metamask-react";
 import { useNavigate } from "react-router-dom";
@@ -97,6 +99,7 @@ export function Home() {
   const [ownedCount, setOwnedCount] = useState(0);
   const [sellCount, setSellCount] = useState(0);
   const [buyCount, setBuyCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
@@ -159,14 +162,16 @@ export function Home() {
     if (status !== "initializing" && status !== "connected") {
       navigate("/login");
     }
-    fetchData();
+    if (status === "connected") fetchData();
   }, [status]);
 
   const fetchData = async () => {
+    setLoading(true);
     await initConnection();
     await getTagCount().then((rlt) => {
       setOwnedCount(rlt);
     });
+    setLoading(false);
   };
 
   // useEffect(() => {
@@ -267,6 +272,12 @@ export function Home() {
           </TabPanel>
         </Box>
       </Box>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

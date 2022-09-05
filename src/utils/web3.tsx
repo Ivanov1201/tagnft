@@ -36,7 +36,6 @@ const initConnection = async() => {
 
 const getTagCount = async () => {
   if (has_error) {
-    alert("Error occured in metamask");
     return;
   }
   const count = await contractWithSigner?.balanceOf(address, TAG);
@@ -56,8 +55,11 @@ const sellTagNft = async (count: number) => {
 
 const buyTagNft = async (count: number) => {
   contractWithSigner?.buyTag(count).then(
-    () => {
-      alert("successfully baught");
+    async (tag: any) => {
+      // alert("successfully baught");
+      const txReceipt = await tag.wait(1);
+
+      console.log(txReceipt);
     },
     (error: unknown) => {
       console.log(error);
