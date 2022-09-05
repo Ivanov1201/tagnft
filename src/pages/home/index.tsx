@@ -15,7 +15,7 @@ import {
   calc_sell_weth_from_count,
   calc_buy_weth_from_count,
 } from "src/utils/arithmetic";
-import { sellTagNft, buyTagNft } from "src/utils/web3";
+import { initConnection, getTagCount, sellTagNft, buyTagNft } from "src/utils/web3";
 
 const TabTitleStyle = {
   flex: 1,
@@ -94,7 +94,7 @@ export function Home() {
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [ownedCount, setOwnedCount] = useState(10);
+  const [ownedCount, setOwnedCount] = useState(0);
   const [sellCount, setSellCount] = useState(0);
   const [buyCount, setBuyCount] = useState(0);
 
@@ -122,6 +122,7 @@ export function Home() {
   };
 
   const onSell = () => {
+    if (!sellCount) alert("Please select how many tags you would like to sell");
     sellTagNft(sellCount);
   };
 
@@ -149,6 +150,7 @@ export function Home() {
   };
 
   const onBuy = () => {
+    if (!buyCount) alert("Please select how many tags you would like to buy");
     buyTagNft(buyCount);
   };
   ////
@@ -157,7 +159,19 @@ export function Home() {
     if (status !== "initializing" && status !== "connected") {
       navigate("/login");
     }
+    fetchData();
   }, [status]);
+
+  const fetchData = async () => {
+    await initConnection();
+    await getTagCount().then((rlt) => {
+      setOwnedCount(rlt);
+    });
+  };
+
+  // useEffect(() => {
+  //   fetchData().catch(console.error);
+  // }, []);
 
   return (
     <>
