@@ -1,6 +1,7 @@
 import { ethers, Contract, Signer } from "ethers";
 
 declare let window: any;
+
 // import contractABI from "../contracts/proxy.json";
 // const contractAddress = "0x72A40770537525c4E67FE8121409100DCf141718";
 import contractABI from "../contracts/tagnft.json";
