@@ -56,6 +56,10 @@ const ModalButtonStyle = {
   minWidth: "100px",
 };
 
+const LoginButtonStyle = {
+  marginBottom: "50px"
+};
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -92,7 +96,7 @@ function a11yProps(index: number) {
 }
 
 export function Home() {
-  const { status } = useMetaMask();
+  const { status, connect, chainId, switchChain } = useMetaMask();
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -124,7 +128,10 @@ export function Home() {
     setSellCount(Math.max(sellCount - 1, 0));
   };
 
-  const onSell = () => {
+  const onSell = async () => {
+    if (status !== "initializing" && status !== "connected") {
+      await login();
+    }
     if (!sellCount) alert("Please select how many tags you would like to sell");
     sellTagNft(sellCount).then((rlt) => {
       if (!rlt) return;
@@ -156,7 +163,10 @@ export function Home() {
     setBuyCount(Math.max(buyCount - 1, 0));
   };
 
-  const onBuy = () => {
+  const onBuy = async () => {
+    if (status !== "initializing" && status !== "connected") {
+      await login();
+    }
     if (!buyCount) alert("Please select how many tags you would like to buy");
     buyTagNft(buyCount).then((rlt) => {
       if (!rlt) return;
@@ -166,10 +176,18 @@ export function Home() {
   };
   ////
 
-  useEffect(() => {
-    if (status !== "initializing" && status !== "connected") {
-      navigate("/login");
+  const login = async () => {
+    if (status === "unavailable") {
+      alert("Please install metamask!");
+      return;
     }
+    await connect().then(async () => {
+      if (chainId !== "0x89") await switchChain("0x89");
+    });
+  };
+
+  useEffect(() => {
+    
     if (status === "connected") fetchData();
   }, [status]);
 
@@ -181,6 +199,15 @@ export function Home() {
     });
     setLoading(false);
   };
+  // const login = async () => {
+  //   if (status === "unavailable") {
+  //     alert("Please install metamask!");
+  //     return;
+  //   }
+  //   await connect().then(async () => {
+  //     if (chainId !== "0x89") await switchChain("0x89");
+  //   });
+  // };
 
   // useEffect(() => {
   //   fetchData().catch(console.error);
@@ -189,9 +216,16 @@ export function Home() {
   return (
     <>
       <Box
-        sx={{ height: "100vh" }}
+        sx={{ height: "100vh", flexDirection: "column" }}
         style={selectedTab ? ContainerBox_buy : ContainerBox_sell}
       >
+        {status !== "connected" ? (
+          <Button variant="contained" sx={{ minWidth: 200 }} style={LoginButtonStyle} onClick={login}>
+          Login
+        </Button>
+        ) : <></>
+        }
+        
         <Box sx={{ width: 300, height: 400, bgcolor: "white" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
