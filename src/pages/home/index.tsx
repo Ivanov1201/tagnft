@@ -187,7 +187,7 @@ export function Home() {
   };
 
   useEffect(() => {
-    
+    console.log("test");
     if (status === "connected") fetchData();
   }, [status]);
 
